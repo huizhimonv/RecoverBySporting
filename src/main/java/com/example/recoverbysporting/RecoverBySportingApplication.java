@@ -8,5 +8,4 @@ public class RecoverBySportingApplication {
         public static void main(String[] args) {
             SpringApplication.run(RecoverBySportingApplication.class, args);
         }
-
 }
