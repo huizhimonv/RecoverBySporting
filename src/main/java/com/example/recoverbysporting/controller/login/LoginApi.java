@@ -46,13 +46,13 @@ public class LoginApi {
 //            subject.checkPermissions("query", "add");
         } catch (UnknownAccountException e) {
             log.error("用户名不存在！", e);
-            return "用户名不存在！";
+            return new ResultBody<>(false,500,"用户名不存在");
         } catch (AuthenticationException e) {
             log.error("账号或密码错误！", e);
-            return "账号或密码错误！";
+            return new ResultBody<>(false,501,"账号或密码错误！");
         } catch (AuthorizationException e) {
             log.error("没有权限！", e);
-            return "没有权限";
+            return new ResultBody<>(false,502,"没有权限！");
         }
         return new ResultBody<>(true,200,"login success");
     }

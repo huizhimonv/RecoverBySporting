@@ -11,12 +11,14 @@ public class Patient {
     private String telephone;
     private String sex;
     private double height;
-    private Date birthday;
+    private double weight;
+    private String birthday;
     private int oid;
     private int did;
     private String head;
-    private Date startDate;
-    private Date endDate;
-    private Date registerDate;
-    private Date loginDate;
+    private String startDate;
+    private String endDate;
+    private String registerDate;
+    private String loginDate;
+    private String doctorName;
 }

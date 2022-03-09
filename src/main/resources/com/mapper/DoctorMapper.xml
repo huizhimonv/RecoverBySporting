@@ -7,4 +7,5 @@
     <select id="getRoleByRoleName" resultType="Role">SELECT * FROM role WHERE roleName=#{roleName}</select>
     <select id="checkUser" resultType="Doctor">SELECT * FROM doctor WHERE account=#{account} AND password=#{password}</select>
     <select id="getUserByAccount" resultType="Doctor">SELECT * FROM doctor WHERE account=#{accoount}</select>
+    <select id="getDoctorList" resultType="Doctor">SELECT * FROM doctor</select>
 </mapper>

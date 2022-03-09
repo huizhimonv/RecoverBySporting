@@ -2,6 +2,7 @@ package com.example.recoverbysporting.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.example.recoverbysporting.dao.DoctorDao;
+import com.example.recoverbysporting.dao.OrganizationDao;
 import com.example.recoverbysporting.entity.Doctor;
 import com.example.recoverbysporting.entity.Role;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,8 @@ import java.util.List;
 public class UserServiceImpl implements UserService{
     @Autowired
     DoctorDao doctorDao;
+    @Autowired
+    OrganizationDao organizationDao;
 
     /**
      * 根据
@@ -52,5 +55,20 @@ public class UserServiceImpl implements UserService{
     @Override
     public Doctor getUserByAccount(String account) {
         return doctorDao.getUserByAccount(account);
+    }
+
+    @Override
+    public List<JSONObject> getDoctorList() {
+        List<JSONObject> res = new ArrayList<>();
+        for(Doctor doctor : doctorDao.getDoctorList()){
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("id",doctor.getId());
+            jsonObject.put("name",doctor.getName());
+            jsonObject.put("oid",doctor.getOid());
+            jsonObject.put("organizationName",organizationDao.findByOid(doctor.getOid()).getName());
+            jsonObject.put("account",doctor.getAccount());
+            res.add(jsonObject);
+        }
+        return res;
     }
 }
