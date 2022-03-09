@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.recoverbysporting.dao.DoctorDao">
+    <select id="getDoctorByUid" resultType="Doctor">SELECT * FROM doctor WHERE id=#{uid}</select>
+    <select id="getRoleByRoleName" resultType="Role">SELECT * FROM role WHERE roleName=#{roleName}</select>
+    <select id="checkUser" resultType="Doctor">SELECT * FROM doctor WHERE account=#{account} AND password=#{password}</select>
+    <select id="getUserByAccount" resultType="Doctor">SELECT * FROM doctor WHERE account=#{accoount}</select>
+</mapper>
