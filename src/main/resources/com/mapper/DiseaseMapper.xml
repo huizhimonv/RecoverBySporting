@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.recoverbysporting.dao.DiseaseDao">
-    <select id="findById" resultType="Disease">SELECT * FORM disease WHERE pid=#{pid} AND did=#{did}</select>
+    <select id="findById" resultType="Disease">SELECT * FROM disease WHERE pid=#{pid} AND did=#{did}</select>
     <select id="findForAdmin" resultType="Disease">SELECT * FROM disease
     <trim prefix="where" prefixOverrides="and|or">
         <if test="pid!=null and pid!=''" >
@@ -21,4 +21,11 @@
             </if>
         </trim>
     </select>
+    <insert id="insert">INSERT INTO disease(pid,did,sugar,sleep,joint,date)
+                        VALUES (#{disease.pid},#{disease.did},#{disease.sugar},
+                                #{disease.sleep},#{disease.joint},#{disease.date})</insert>
+    <update id="update">UPDATE disease SET pid=#{disease.pid},did=#{disease.did},
+                            sugar=#{disease.sugar},sleep=#{disease.sleep},
+                            joint=#{disease.joint},date=#{disease.date} WHERE id=#{disease.id}</update>
+    <delete id="delete">DELETE FROM disease WHERE id=#{id}</delete>
 </mapper>

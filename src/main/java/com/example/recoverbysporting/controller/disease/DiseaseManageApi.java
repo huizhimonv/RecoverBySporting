@@ -1,6 +1,7 @@
 package com.example.recoverbysporting.controller.disease;
 
 import com.example.recoverbysporting.dao.DiseaseDao;
+import com.example.recoverbysporting.entity.Disease;
 import com.example.recoverbysporting.entity.Doctor;
 import com.example.recoverbysporting.service.DiseaseService;
 import com.example.recoverbysporting.service.PatientService;
@@ -8,13 +9,14 @@ import com.example.recoverbysporting.service.UserService;
 import com.example.recoverbysporting.utils.ResultBody;
 import com.example.recoverbysporting.utils.page.PageRequest;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -31,7 +33,7 @@ public class DiseaseManageApi {
     /**
      * 根据医生的id和病人的id 返回某一个患者的疾病汇报（patientName、sugar、sleep、joint、date）
      */
-    @RequestMapping("/findById")
+    @RequestMapping(value = "/findById",method = RequestMethod.GET)
     public Object findById(@RequestParam Integer id) {
         if (id <= 0) {
             return new ResultBody<>(false, 501, "error id");
@@ -46,7 +48,7 @@ public class DiseaseManageApi {
      * 根据医生的id查找对应患者的所有疾病汇报（patientName、sugar、sleep、joint、date）
      * 具有搜索功能，通过病人的姓名 patientName要填完整
      */
-    @RequestMapping("/allForDoctor")
+    @RequestMapping(value = "/allForDoctor",method = RequestMethod.GET)
     public Object allForDoctor(@RequestParam Integer pageNum, @RequestParam Integer pageSize,
                                @RequestParam(required = false) String patientName) {
         PageRequest pageRequest = new PageRequest(pageNum, pageSize);
@@ -66,7 +68,8 @@ public class DiseaseManageApi {
      * 返回所有病人的疾病信息
      * 具有搜索功能，通过病人的姓名
      */
-    @RequestMapping("/allForAdmin")
+    @RequiresRoles("admin")
+    @RequestMapping(value = "/allForAdmin",method = RequestMethod.GET)
     public Object allForAdmin(@RequestParam Integer pageNum, @RequestParam Integer pageSize,
                               @RequestParam(required = false) String patientName) {
         PageRequest pageRequest = new PageRequest(pageNum, pageSize);
@@ -80,10 +83,74 @@ public class DiseaseManageApi {
 
     /**
      * 医生：
-     * 新增疾病汇报 did、sugar、sleep、joint
+     * 新增疾病汇报 pid,sugar、sleep、joint
      */
-    @RequestMapping("/insertForDoctor")
-    public Object insertForDoctor(){
+    @RequestMapping(value = "/insertForDoctor",method = RequestMethod.POST)
+    public Object insertForDoctor(@RequestBody Disease disease){
+        //获取当前的时间
+        String date = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime());
+        Subject subject = SecurityUtils.getSubject();
+        String account = (String) subject.getPrincipal();
+        Doctor doctor = userService.getUserByAccount(account);
+        disease.setDate(date);
+        disease.setDid(doctor.getId());
+        diseaseService.insertForDoctor(disease);
+        return new ResultBody<>(true,200,null);
+    }
+
+    /**
+     * 管理员：
+     * 新增疾病汇报 did（下拉框）、pid、sugar、sleep、joint、
+     */
+    @RequiresRoles("admin")
+    @RequestMapping(value = "/insertForAdmin",method = RequestMethod.POST)
+    public Object insertForAdmin(@RequestBody Disease disease){
+        //获取当前的时间
+        String date = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime());
+        disease.setDate(date);
+        diseaseService.insertForAdmin(disease);
+        return new ResultBody<>(true,200,null);
+    }
+
+    /**
+     * 医生：
+     * 修改疾病汇报 id(疾病的id),pid,sugar,sleep,joint
+     */
+    @RequestMapping(value = "/updateForDoctor",method = RequestMethod.POST)
+    public Object updateForDoctor(@RequestBody Disease disease){
+        Subject subject = SecurityUtils.getSubject();
+        String account = (String) subject.getPrincipal();
+        Doctor doctor = userService.getUserByAccount(account);
+        disease.setDid(doctor.getId());
+        String date = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime());
+        disease.setDate(date);
+        diseaseService.update(disease);
+        return new ResultBody<>(true,200,null);
+    }
+
+    /**
+     * 管理员：
+     * 修改疾病汇报 id(疾病的id)、did、pid、sugar、sleep、joint
+     */
+    @RequiresRoles("admin")
+    @RequestMapping(value = "/updateForAdmin",method = RequestMethod.POST)
+    public Object updateForAdmin(@RequestBody Disease disease){
+        String date = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime());
+        disease.setDate(date);
+        diseaseService.update(disease);
+        return new ResultBody<>(true,200,null);
+    }
+
+    /**
+     * 医生、管理员：
+     * 对疾病进行删除
+     */
+    @RequestMapping(value = "/delete",method = RequestMethod.GET)
+    public Object delete(@RequestParam int id){
+        if(id <= 0){
+            return new ResultBody<>(false,501,"error id");
+        }
+        diseaseService.delete(id);
         return new ResultBody<>(true,200,null);
     }
 }

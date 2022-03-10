@@ -54,6 +54,26 @@ public class DiseaseServiceImpl implements DiseaseService{
         return PageUtil.getPageResult(getPageInfoForAdmin(pageRequest, pids),page);
     }
 
+    @Override
+    public void insertForDoctor(Disease disease) {
+        diseaseDao.insert(disease);
+    }
+
+    @Override
+    public void insertForAdmin(Disease disease) {
+        diseaseDao.insert(disease);
+    }
+
+    @Override
+    public void update(Disease disease) {
+        diseaseDao.update(disease);
+    }
+
+    @Override
+    public void delete(int id) {
+        diseaseDao.delete(id);
+    }
+
     private PageInfo<?> getPageInfoForDoctor(PageRequest pageRequest,List<Integer> pids,Integer did) {
         int pageNum = pageRequest.getPageNum();
         int pageSize = pageRequest.getPageSize();
@@ -63,7 +83,7 @@ public class DiseaseServiceImpl implements DiseaseService{
         for(Disease disease : findForDoctor(pids, did)){
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("id",disease.getId());
-            jsonObject.put("patientName",patientDao.getPatientById(disease.getId()).getName());
+            jsonObject.put("patientName",patientDao.getPatientById(disease.getPid()).getName());
             jsonObject.put("sugar",disease.getSugar());
             jsonObject.put("sleep",disease.getSleep());
             jsonObject.put("joint",disease.getJoint());
@@ -82,7 +102,7 @@ public class DiseaseServiceImpl implements DiseaseService{
         for(Disease disease : findForAdmin(pids)){
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("id",disease.getId());
-            jsonObject.put("patientName",patientDao.getPatientById(disease.getId()).getName());
+            jsonObject.put("patientName",patientDao.getPatientById(disease.getPid()).getName());
             jsonObject.put("doctorName",doctorDao.getDoctorByUid(disease.getDid()).getName());
             jsonObject.put("sugar",disease.getSugar());
             jsonObject.put("sleep",disease.getSleep());
@@ -92,16 +112,25 @@ public class DiseaseServiceImpl implements DiseaseService{
         }
         return new PageInfo<>(res);
     }
-    List<Disease> findForDoctor(List<Integer> pids,Integer did){
+
+    private List<Disease> findForDoctor(List<Integer> pids,Integer did){
         List<Disease> res = new ArrayList<>();
+        if(pids.isEmpty()){
+            Integer pid = null;
+            res.addAll(diseaseDao.findForDoctor(pid,did));
+        }
         for(Integer pid : pids){
             res.addAll(diseaseDao.findForDoctor(pid,did));
         }
         return res;
     }
 
-    List<Disease> findForAdmin(List<Integer> pids){
+    private List<Disease> findForAdmin(List<Integer> pids){
         List<Disease> res = new ArrayList<>();
+        if(pids.isEmpty()){
+            Integer pid = null;
+            res.addAll(diseaseDao.findForAdmin(pid));
+        }
         for(Integer pid : pids){
             res.addAll(diseaseDao.findForAdmin(pid));
         }

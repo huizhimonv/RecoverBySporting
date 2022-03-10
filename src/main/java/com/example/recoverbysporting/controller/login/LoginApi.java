@@ -46,6 +46,7 @@ public class LoginApi {
             subject.login(usernamePasswordToken);
             String JSESSIONID = (String) subject.getSession().getId();
             res.put("JSESSIONID",JSESSIONID);
+            res.put("role",userService.getRoleByUid(userService.getUserByAccount(account).getId()));
 //            subject.checkRole("admin");
 //            subject.checkPermissions("query", "add");
         } catch (UnknownAccountException e) {
