@@ -70,6 +70,12 @@ public class PatientServiceImpl implements PatientService{
     public void deleteById(int id) {
         patientDao.deleteById(id);
     }
+
+    @Override
+    public List<Integer> getIdByName(String patientName) {
+        return patientDao.getIdByName(patientName);
+    }
+
     private PageInfo<?> getPageInfoByDid(PageRequest pageRequest,int did) {
         int pageNum = pageRequest.getPageNum();
         int pageSize = pageRequest.getPageSize();

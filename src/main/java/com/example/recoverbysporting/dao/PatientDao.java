@@ -14,4 +14,6 @@ public interface PatientDao {
     Patient getPatientById(int id);
     void update(@Param("patient") Patient patient);
     void deleteById(int id);
+    //疾病汇报模块
+    List<Integer> getIdByName(String patientName);
 }

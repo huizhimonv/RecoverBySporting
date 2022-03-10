@@ -1,5 +1,6 @@
 package com.example.recoverbysporting.controller.login;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.example.recoverbysporting.entity.Doctor;
 import com.example.recoverbysporting.service.UserService;
@@ -39,9 +40,12 @@ public class LoginApi {
                 doctor.getAccount(),
                 doctor.getPassword()
         );
+        JSONObject res = new JSONObject();
         try {
             //进行验证，这里可以捕获异常，然后返回对应信息
             subject.login(usernamePasswordToken);
+            String JSESSIONID = (String) subject.getSession().getId();
+            res.put("JSESSIONID",JSESSIONID);
 //            subject.checkRole("admin");
 //            subject.checkPermissions("query", "add");
         } catch (UnknownAccountException e) {
@@ -54,7 +58,7 @@ public class LoginApi {
             log.error("没有权限！", e);
             return new ResultBody<>(false,502,"没有权限！");
         }
-        return new ResultBody<>(true,200,"login success");
+        return new ResultBody<>(true,200,res);
     }
 
     @GetMapping("/index")

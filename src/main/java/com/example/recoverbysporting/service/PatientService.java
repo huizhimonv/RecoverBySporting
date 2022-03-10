@@ -16,4 +16,6 @@ public interface PatientService {
     JSONObject getPatientById(int id);
     void update(Patient patient);
     void deleteById(int id);
+    //疾病汇报模块
+    List<Integer> getIdByName(String patientName);
 }

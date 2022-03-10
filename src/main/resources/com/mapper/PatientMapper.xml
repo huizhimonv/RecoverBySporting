@@ -15,4 +15,5 @@
                    birthday=#{patient.birthday},oid=#{patient.oid},did=#{patient.did},
                    startDate=#{patient.startDate},endDate=#{patient.endDate} WHERE id=#{patient.id}</update>
     <delete id="deleteById">DELETE FROM patient WHERE id=#{id}</delete>
+    <select id="getIdByName" resultType="Integer">SELECT id FROM patient WHERE name=#{patientName}</select>
 </mapper>
