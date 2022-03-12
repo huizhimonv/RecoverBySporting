@@ -47,7 +47,7 @@ public class ShiroConfig {
         shiroFilterFactoryBean.setSecurityManager(securityManager);
         Map<String, String> map = new HashMap<>();
         //登出
-        map.put("/logout", "logout");
+        //map.put("/logout", "logout");
         //对所有用户认证  authc:表示需要认证才能访问     anno:表示不需要认证就可以访问,直接注释掉下面的那一句就可以了
         map.put("/**", "authc");
         //登录

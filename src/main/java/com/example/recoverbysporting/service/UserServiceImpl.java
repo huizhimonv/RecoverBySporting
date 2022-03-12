@@ -5,6 +5,7 @@ import com.example.recoverbysporting.dao.DoctorDao;
 import com.example.recoverbysporting.dao.OrganizationDao;
 import com.example.recoverbysporting.entity.Doctor;
 import com.example.recoverbysporting.entity.Role;
+import com.example.recoverbysporting.utils.page.PageRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -70,5 +71,10 @@ public class UserServiceImpl implements UserService{
             res.add(jsonObject);
         }
         return res;
+    }
+
+    @Override
+    public PageRequest findPage(PageRequest pageRequest) {
+        return null;
     }
 }

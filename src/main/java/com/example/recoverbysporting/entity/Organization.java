@@ -8,4 +8,5 @@ public class Organization {
     private String name;
     private String leader;
     private String telephone;
+    private String date;
 }

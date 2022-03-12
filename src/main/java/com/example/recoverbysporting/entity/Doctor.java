@@ -11,4 +11,5 @@ public class Doctor {
     private String role;
     private String password;
     private String account;
+    private String date;
 }

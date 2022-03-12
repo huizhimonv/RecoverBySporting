@@ -42,6 +42,7 @@ public class PatientManageApi {
         Subject subject = SecurityUtils.getSubject();
         String account = (String) subject.getPrincipal();
         Doctor doctor = userService.getUserByAccount(account);
+        System.out.println("---------"+doctor);
         return new ResultBody<>(true,200,patientService.findPageByDid(pageRequest,doctor.getId()));
     }
 
