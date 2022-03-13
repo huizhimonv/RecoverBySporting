@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.recoverbysporting.dao.LogDao">
+    <insert id="insert">INSERT INTO log(did,content,date,state)
+                        VALUES(#{log.did},#{log.content},#{log.date},#{log.state})</insert>
+    <select id="findByDid" resultType="Log">SELECT * FROM log WHERE did=#{did} ORDER BY date DESC</select>
+    <delete id="delete">DELETE FROM log WHERE did=#{did}</delete>
+</mapper>

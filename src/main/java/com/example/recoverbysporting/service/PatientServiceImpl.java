@@ -76,6 +76,11 @@ public class PatientServiceImpl implements PatientService{
         return patientDao.getIdByName(patientName);
     }
 
+    @Override
+    public Patient getById(int id) {
+        return patientDao.getPatientById(id);
+    }
+
     private PageInfo<?> getPageInfoByDid(PageRequest pageRequest,int did) {
         int pageNum = pageRequest.getPageNum();
         int pageSize = pageRequest.getPageSize();

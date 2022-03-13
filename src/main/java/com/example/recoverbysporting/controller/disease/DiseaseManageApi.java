@@ -3,12 +3,12 @@ package com.example.recoverbysporting.controller.disease;
 import com.example.recoverbysporting.dao.DiseaseDao;
 import com.example.recoverbysporting.entity.Disease;
 import com.example.recoverbysporting.entity.Doctor;
-import com.example.recoverbysporting.service.DiseaseService;
-import com.example.recoverbysporting.service.PatientService;
-import com.example.recoverbysporting.service.UserService;
+import com.example.recoverbysporting.entity.Log;
+import com.example.recoverbysporting.service.*;
 import com.example.recoverbysporting.utils.ResultBody;
 import com.example.recoverbysporting.utils.page.PageRequest;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +28,8 @@ public class DiseaseManageApi {
     UserService userService;
     @Autowired
     PatientService patientService;
+    @Autowired
+    LogService logService;
 
 
     /**
@@ -68,7 +70,7 @@ public class DiseaseManageApi {
      * 返回所有病人的疾病信息
      * 具有搜索功能，通过病人的姓名
      */
-    @RequiresRoles("admin")
+    @RequiresRoles(value = {"admin","super"},logical = Logical.OR)
     @RequestMapping(value = "/allForAdmin",method = RequestMethod.GET)
     public Object allForAdmin(@RequestParam Integer pageNum, @RequestParam Integer pageSize,
                               @RequestParam(required = false) String patientName) {
@@ -76,7 +78,13 @@ public class DiseaseManageApi {
         //根据patientName获得pid,因为存在不同的病人可能有相同的名字
         List<Integer> pids = patientService.getIdByName(patientName);
         if (pids == null) {
+            if(isSuper()){
+                logService.insert(new Log(getIdAndDate().getDid(), "对患者进行搜索", getIdAndDate().getDate(), "失败"));
+            }
             return new ResultBody<>(false, 501, "unknown patientName");
+        }
+        if(isSuper()){
+            logService.insert(new Log(getIdAndDate().getDid(), "查看患者的患病信息", getIdAndDate().getDate(), "成功"));
         }
         return new ResultBody<>(true,200,diseaseService.findPageForAdmin(pageRequest,pids));
     }
@@ -102,13 +110,16 @@ public class DiseaseManageApi {
      * 管理员：
      * 新增疾病汇报 did（下拉框）、pid、sugar、sleep、joint、
      */
-    @RequiresRoles("admin")
+    @RequiresRoles(value = {"admin","super"},logical = Logical.OR)
     @RequestMapping(value = "/insertForAdmin",method = RequestMethod.POST)
     public Object insertForAdmin(@RequestBody Disease disease){
         //获取当前的时间
         String date = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime());
         disease.setDate(date);
         diseaseService.insertForAdmin(disease);
+        if(isSuper()){
+            logService.insert(new Log(getIdAndDate().getDid(), "新增疾病汇报", getIdAndDate().getDate(), "成功"));
+        }
         return new ResultBody<>(true,200,null);
     }
 
@@ -132,12 +143,16 @@ public class DiseaseManageApi {
      * 管理员：
      * 修改疾病汇报 id(疾病的id)、did、pid、sugar、sleep、joint
      */
-    @RequiresRoles("admin")
+    @RequiresRoles(value = {"admin","super"},logical = Logical.OR)
     @RequestMapping(value = "/updateForAdmin",method = RequestMethod.POST)
     public Object updateForAdmin(@RequestBody Disease disease){
         String date = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime());
         disease.setDate(date);
         diseaseService.update(disease);
+        if(isSuper()){
+            String name = patientService.getById(disease.getPid()).getName();
+            logService.insert(new Log(getIdAndDate().getDid(), "对"+"["+name+"]"+"的疾病汇报进行更新操作", getIdAndDate().getDate(), "成功"));
+        }
         return new ResultBody<>(true,200,null);
     }
 
@@ -151,6 +166,27 @@ public class DiseaseManageApi {
             return new ResultBody<>(false,501,"error id");
         }
         diseaseService.delete(id);
+        if(isSuper()){
+            logService.insert(new Log(getIdAndDate().getDid(), "对某个疾病汇报进行删除操作", getIdAndDate().getDate(), "成功"));
+        }
         return new ResultBody<>(true,200,null);
+    }
+
+    private Log getIdAndDate(){
+        Subject subject = SecurityUtils.getSubject();
+        String account = (String) subject.getPrincipal();
+        Doctor doctor = userService.getUserByAccount(account);
+        String date = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(Calendar.getInstance().getTime());
+        return new Log(doctor.getId(),date);
+    }
+    private  boolean isSuper(){
+        Subject subject = SecurityUtils.getSubject();
+        String account = (String) subject.getPrincipal();
+        Doctor doctor = userService.getUserByAccount(account);
+        if(doctor.getRole().contains("super")){
+            return true;
+        }else {
+            return false;
+        }
     }
 }

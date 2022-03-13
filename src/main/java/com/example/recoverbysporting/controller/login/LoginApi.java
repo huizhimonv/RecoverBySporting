@@ -37,6 +37,14 @@ public class LoginApi {
         doctor.setAccount(account);
         password = DigestUtils.md5DigestAsHex(password.getBytes(StandardCharsets.UTF_8));
         doctor.setPassword(password);
+        //这里判断用户的账号是否被禁用
+        if(userService.getUserByAccount(account) == null){
+            return new ResultBody<>(false,500,"用户名不存在");
+        }else {
+            if(userService.getUserByAccount(account).isDisable()){
+                return new ResultBody<>(false,503,"该账号已被禁用");
+            }
+        }
         Subject subject = SecurityUtils.getSubject();
         UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(
                 doctor.getAccount(),

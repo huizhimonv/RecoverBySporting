@@ -18,4 +18,6 @@ public interface PatientService {
     void deleteById(int id);
     //疾病汇报模块
     List<Integer> getIdByName(String patientName);
+    //系统管理模块
+    Patient getById(int id);
 }

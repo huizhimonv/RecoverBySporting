@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class Doctor {
-    private int id;
+    private Integer id;
     private String name;
     private int oid;
     private String telephone;
@@ -12,4 +12,5 @@ public class Doctor {
     private String password;
     private String account;
     private String date;
+    private boolean isDisable;
 }

@@ -8,4 +8,17 @@
     <select id="checkUser" resultType="Doctor">SELECT * FROM doctor WHERE account=#{account} AND password=#{password}</select>
     <select id="getUserByAccount" resultType="Doctor">SELECT * FROM doctor WHERE account=#{accoount}</select>
     <select id="getDoctorList" resultType="Doctor">SELECT * FROM doctor</select>
+    <select id="getAdmin" resultType="Doctor">SELECT * FROM doctor WHERE role like "%admin%"</select>
+    <update id="reset">UPDATE doctor SET password="e10adc3949ba59abbe56e057f20f883e" WHERE id=#{id}</update>
+    <update id="updateRole">UPDATE doctor SET role=#{role} WHERE account=#{account}</update>
+    <insert id="insert">INSERT INTO doctor(account, oid, role, password, name, date,isDisable) VALUES
+                        (#{doctor.account},#{doctor.oid},#{doctor.role},
+                         #{doctor.password},#{doctor.name},#{doctor.date},#{doctor.isDisable})</insert>
+    <update id="update">UPDATE doctor SET account=#{doctor.account},oid=#{doctor.oid},name=#{doctor.name}
+                                          WHERE id=#{doctor.id}</update>
+    <update id="deleteRole">UPDATE doctor SET role=#{role} WHERE id=#{id}</update>
+    <delete id="delete">DELETE FROM doctor WHERE id=#{id}</delete>
+    <update id="disable">UPDATE doctor SET isDisable=true WHERE id=#{id}</update>
+    <update id="cancelDisable"> UPDATE doctor SET isDisable=false WHERE id=#{id}</update>
+    <select id="getById" resultType="Doctor">SELECT * FROM doctor WHERE id=#{id}</select>
 </mapper>
