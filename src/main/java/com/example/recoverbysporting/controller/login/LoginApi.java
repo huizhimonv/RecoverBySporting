@@ -33,6 +33,7 @@ public class LoginApi {
                         @RequestParam String password,
                         HttpSession session,
                         RedirectAttributes attributes){
+        SecurityUtils.getSubject().getSession().setTimeout(-1000L);
         Doctor doctor = new Doctor();
         doctor.setAccount(account);
         password = DigestUtils.md5DigestAsHex(password.getBytes(StandardCharsets.UTF_8));
@@ -50,7 +51,6 @@ public class LoginApi {
                 doctor.getAccount(),
                 doctor.getPassword()
         );
-        usernamePasswordToken.setRememberMe(true);
         JSONObject res = new JSONObject();
         try {
             //进行验证，这里可以捕获异常，然后返回对应信息

@@ -16,7 +16,7 @@ public interface DoctorDao {
     Doctor getUserByAccount(String account);
     List<Doctor> getDoctorList();
     //系统管理模块
-    List<Doctor> getAdmin();
+    List<Doctor> getDoctor();
     void reset(int id);
     void updateRole(String account,String role);
     void insert(@Param("doctor") Doctor doctor);

@@ -2,8 +2,9 @@ package com.example.recoverbysporting.entity;
 
 import lombok.Data;
 
+import java.io.Serializable;
 @Data
-public class Doctor {
+public class Doctor implements Serializable {
     private Integer id;
     private String name;
     private int oid;

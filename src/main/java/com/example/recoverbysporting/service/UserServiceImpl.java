@@ -145,7 +145,7 @@ public class UserServiceImpl implements UserService{
         //设置分页数据
         page = PageHelper.startPage(pageNum,pageSize);
         List<JSONObject> res = new ArrayList<>();
-        for(Doctor doctor : doctorDao.getAdmin()){
+        for(Doctor doctor : doctorDao.getDoctor()){
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("id",doctor.getId());
             jsonObject.put("name",doctor.getName());

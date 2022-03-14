@@ -36,10 +36,10 @@ public class PatientManageApi {
      * 管理员查看所有患者
      * @return
      */
-    @RequiresRoles(value = {"admin","super"},logical = Logical.OR)
+    @RequiresRoles("admin")
     @RequestMapping(value = "/allForAdmin",method = RequestMethod.POST)
     public Object findAllForManager(@RequestBody PageRequest pageRequest){
-        if(isSuper()){
+        if(isAdmin()){
             logService.insert(new Log(getIdAndDate().getDid(), "查看所有患者", getIdAndDate().getDate(), "成功"));
         }
         return new ResultBody<>(true,200,patientService.findPage(pageRequest));
@@ -88,11 +88,11 @@ public class PatientManageApi {
      * @param patient: name,telephone,sex,height,weight,birthday,(oid,did)（必填）,startDate,endDate
      * @return
      */
-    @RequiresRoles(value = {"admin","super"},logical = Logical.OR)
+    @RequiresRoles("admin")
     @RequestMapping(value = "/insertForAdmin",method = RequestMethod.POST)
     public Object insertByAdmin(@RequestBody Patient patient){
         patientService.insert(patient);
-        if(isSuper()){
+        if(isAdmin()){
             logService.insert(new Log(getIdAndDate().getDid(), "新增一名患者", getIdAndDate().getDate(), "成功"));
         }
         return new ResultBody<>(true,200,null);
@@ -134,14 +134,14 @@ public class PatientManageApi {
      * @param patient id,name,telephone,sex,height,weight,birthday,oid,did,,startDate,endDate
      * @return
      */
-    @RequiresRoles(value = {"admin","super"},logical = Logical.OR)
+    @RequiresRoles("admin")
     @RequestMapping(value = "/updateForAdmin",method = RequestMethod.POST)
     public Object updateForAdmin(@RequestBody Patient patient){
         if(patient.getId() <= 0){
             return new ResultBody<>(false,500,"error id");
         }
         patientService.update(patient);
-        if(isSuper()){
+        if(isAdmin()){
             String name = patient.getName();
             logService.insert(new Log(getIdAndDate().getDid(), "对"+"["+name+"]"+"进行更新操作", getIdAndDate().getDate(), "成功"));
         }
@@ -173,11 +173,11 @@ public class PatientManageApi {
         String date = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(Calendar.getInstance().getTime());
         return new Log(doctor.getId(),date);
     }
-    private  boolean isSuper(){
+    private  boolean isAdmin(){
         Subject subject = SecurityUtils.getSubject();
         String account = (String) subject.getPrincipal();
         Doctor doctor =  userService.getUserByAccount(account);
-        if(doctor.getRole().contains("super")){
+        if(doctor.getRole().contains("admin")){
             return true;
         }else {
             return false;

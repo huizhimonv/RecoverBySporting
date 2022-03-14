@@ -17,7 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 /**
- * 该模块针对超级管理员使用
+ * 该模块针对管理员使用
  */
 @RestController
 @RequestMapping("/system")
@@ -30,10 +30,10 @@ public class SystemApi {
     /**
      * 查看所有管理员的信息：name、account、password、organizationName、date(创建时间)
      */
-    @RequiresRoles("super")
-    @RequestMapping(value = "/allAdmin",method = RequestMethod.POST)
+    @RequiresRoles("admin")
+    @RequestMapping(value = "/allDoctor",method = RequestMethod.POST)
     public Object findAll(@RequestBody PageRequest pageRequest){
-        logService.insert(new Log(getIdAndDate().getDid(), "查看所有管理员", getIdAndDate().getDate(), "成功"));
+        logService.insert(new Log(getIdAndDate().getDid(), "查看所有医生的信息", getIdAndDate().getDate(), "成功"));
         return new ResultBody<>(true,200,userService.findPage(pageRequest));
     }
 
@@ -42,7 +42,7 @@ public class SystemApi {
      * @param id
      * @return
      */
-    @RequiresRoles("super")
+    @RequiresRoles("admin")
     @RequestMapping(value = "reset",method = RequestMethod.GET)
     public Object reset(@RequestParam int id){
         if(id <= 0){
@@ -55,22 +55,22 @@ public class SystemApi {
     }
 
     /**
-     * 新增管理员 name、account、oid     date、password由后端补充
+     * 新增医生 name、account、oid     date、password由后端补充
      * @param doctor
      * @return
      */
-    @RequiresRoles("super")
-    @RequestMapping(value = "/insertAdmin",method = RequestMethod.POST)
+    @RequiresRoles("admin")
+    @RequestMapping(value = "/insertDoctor",method = RequestMethod.POST)
     public Object insert(@RequestBody Doctor doctor){
         if(userService.getUserByAccount(doctor.getAccount()) != null){
-            //执行更新操作
+            //执行更新操作（之前是管理员的情况下）
             userService.updateRole(doctor.getAccount());
         }else {
             //执行插入操作
             String date = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime());
             doctor.setDate(date);
             doctor.setPassword("e10adc3949ba59abbe56e057f20f883e");
-            String role = "{\"roles\":[\"admin\"]}";
+            String role = "{\"roles\":[\"staff\"]}";
             doctor.setRole(role);
             doctor.setDisable(false);
             userService.insert(doctor);
@@ -82,7 +82,7 @@ public class SystemApi {
      * doctor : id,account,name,oid
      * 修改管理员信息
      */
-    @RequiresRoles("super")
+    @RequiresRoles("admin")
     @RequestMapping("/update")
     public Object update(@RequestBody Doctor doctor){
         if(userService.getUserByAccount(doctor.getAccount()) != null){
@@ -98,29 +98,24 @@ public class SystemApi {
         return new ResultBody<>(true,200,null);
     }
     /**
-     * 删除管理员
+     * 删除医生
      */
-    @RequiresRoles("super")
+    @RequiresRoles("admin")
     @RequestMapping(value = "/delete",method = RequestMethod.GET)
     public Object delete(@RequestParam int id){
         if(id <= 0){
             return new ResultBody<>(false,501,"error id");
         }
         String name = userService.getById(id).getName();
-        if(userService.getRoleByUid(id).size() >= 2){
-            //更新操作
-            userService.deleteRole(id);
-        }else{
             //删除操作
-            userService.delete(id);
-        }
-        logService.insert(new Log(getIdAndDate().getDid(), "撤销"+"["+name+"]"+"的管理员身份并删除", getIdAndDate().getDate(), "成功"));
+        userService.delete(id);
+        logService.insert(new Log(getIdAndDate().getDid(), "删除"+"["+name+"]", getIdAndDate().getDate(), "成功"));
         return new ResultBody<>(true,200,null);
     }
     /**
-     * 禁用管理员功能
+     * 禁用医生功能
      */
-    @RequiresRoles("super")
+    @RequiresRoles("admin")
     @RequestMapping(value = "/setDisable",method = RequestMethod.GET)
     public Object disable(@RequestParam int id){
         if(id <= 0){
@@ -129,14 +124,14 @@ public class SystemApi {
         //标记该账号已被禁用
         userService.disable(id);
         String name = userService.getById(id).getName();
-        logService.insert(new Log(getIdAndDate().getDid(), "禁用"+"["+name+"]"+"的管理员身份", getIdAndDate().getDate(), "成功"));
+        logService.insert(new Log(getIdAndDate().getDid(), "禁用"+"["+name+"]"+"的医生身份", getIdAndDate().getDate(), "成功"));
         return new ResultBody<>(true,200,null);
     }
 
     /**
      * 启用管理员功能
      */
-    @RequiresRoles("super")
+    @RequiresRoles("admin")
     @RequestMapping(value = "/cancelDisable",method = RequestMethod.GET)
     public Object cancelDisable(@RequestParam int id){
         if(id <= 0){
@@ -145,7 +140,7 @@ public class SystemApi {
         //标记该账号已被启用
         userService.cancelDisable(id);
         String name = userService.getById(id).getName();
-        logService.insert(new Log(getIdAndDate().getDid(), "启用"+"["+name+"]"+"的管理员身份", getIdAndDate().getDate(), "成功"));
+        logService.insert(new Log(getIdAndDate().getDid(), "启用"+"["+name+"]"+"的医生身份", getIdAndDate().getDate(), "成功"));
         return new ResultBody<>(true,200,null);
     }
 

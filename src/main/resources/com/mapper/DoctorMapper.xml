@@ -8,7 +8,7 @@
     <select id="checkUser" resultType="Doctor">SELECT * FROM doctor WHERE account=#{account} AND password=#{password}</select>
     <select id="getUserByAccount" resultType="Doctor">SELECT * FROM doctor WHERE account=#{accoount}</select>
     <select id="getDoctorList" resultType="Doctor">SELECT * FROM doctor</select>
-    <select id="getAdmin" resultType="Doctor">SELECT * FROM doctor WHERE role like "%admin%"</select>
+    <select id="getDoctor" resultType="Doctor">SELECT * FROM doctor WHERE role like "%staff%"</select>
     <update id="reset">UPDATE doctor SET password="e10adc3949ba59abbe56e057f20f883e" WHERE id=#{id}</update>
     <update id="updateRole">UPDATE doctor SET role=#{role} WHERE account=#{account}</update>
     <insert id="insert">INSERT INTO doctor(account, oid, role, password, name, date,isDisable) VALUES

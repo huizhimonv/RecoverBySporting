@@ -19,7 +19,7 @@ public class LogApi {
     UserService userService;
 
     /**
-     * 查看某个超级管理员的日志
+     * 查看某个管理员的日志
      * @param pageNum
      * @param pageSize
      * @param account
