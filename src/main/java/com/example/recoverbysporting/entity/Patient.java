@@ -10,7 +10,7 @@ public class Patient {
     private String name;
     private String telephone;
     private String sex;
-    private double height;
+    private Integer height;
     private double weight;
     private String birthday;
     private int oid;
