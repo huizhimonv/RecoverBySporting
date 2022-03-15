@@ -1,10 +1,13 @@
 package com.example.recoverbysporting.config;
 
+import com.example.recoverbysporting.filter.MySessionManager;
 import com.example.recoverbysporting.shiro.CustomRealm;
 import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.session.mgt.eis.MemorySessionDAO;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -49,7 +52,7 @@ public class ShiroConfig {
         //登出
         //map.put("/logout", "logout");
         //对所有用户认证  authc:表示需要认证才能访问     anno:表示不需要认证就可以访问,直接注释掉下面的那一句就可以了
-        map.put("/**", "authc");
+        //map.put("/**", "authc");
         //登录
         shiroFilterFactoryBean.setLoginUrl("/login");
         //首页
@@ -67,4 +70,11 @@ public class ShiroConfig {
         authorizationAttributeSourceAdvisor.setSecurityManager(securityManager);
         return authorizationAttributeSourceAdvisor;
     }
+    @Bean
+    public DefaultWebSessionManager getDefaultWebSessionManager() {
+        MySessionManager defaultWebSessionManager = new MySessionManager();
+        defaultWebSessionManager.setSessionDAO(new MemorySessionDAO());
+        return defaultWebSessionManager;
+    }
+
 }

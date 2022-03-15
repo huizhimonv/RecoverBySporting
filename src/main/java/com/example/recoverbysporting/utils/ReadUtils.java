@@ -22,7 +22,7 @@ public class ReadUtils {
      */
     @SneakyThrows
     public static Map<String, String> getShiroFilterMap(){
-        ClassPathResource classPathResource = new ClassPathResource("static/shiroFilter.json");
+        ClassPathResource classPathResource = new ClassPathResource("templates/shiroFilter.json");
         InputStream inputStream = classPathResource.getInputStream();
         String newLine = System.getProperty("line.separator");
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
