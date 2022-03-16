@@ -3,5 +3,12 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.recoverbysporting.dao.ActionDao">
-
+    <select id="findAll" resultType="Action">SELECT * FROM action </select>
+    <select id="findById" resultType="Action">SELECT * FROM action WHERE id=#{id}</select>
+    <insert id="insert">INSERT ignore INTO action(name,type,content,date)
+                        VALUES(#{action.name},#{action.type},#{action.content},#{action.date})</insert>
+    <update id="update">UPDATE action SET name=#{action.name},type=#{action.type},
+                                          content=#{action.content},date=#{action.date}
+                                          WHERE id=#{action.id}</update>
+    <delete id="delete">DELETE FROM action WHERE id=#{id}</delete>
 </mapper>

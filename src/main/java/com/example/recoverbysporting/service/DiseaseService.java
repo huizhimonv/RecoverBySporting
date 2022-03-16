@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface DiseaseService {
     List<JSONObject> findById(int pid,int did);
+    List<JSONObject> findByPid(int pid);
     PageResult findPageForDoctor(PageRequest pageRequest,List<Integer> pids,int did);
     PageResult findPageForAdmin(PageRequest pageRequest,List<Integer> pids);
     void insertForDoctor(Disease disease);

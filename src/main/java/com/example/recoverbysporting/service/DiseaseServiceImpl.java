@@ -45,6 +45,23 @@ public class DiseaseServiceImpl implements DiseaseService{
     }
 
     @Override
+    public List<JSONObject> findByPid(int pid) {
+        List<JSONObject> res = new ArrayList<>();
+        for(Disease disease : diseaseDao.findByPid(pid)){
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("id",disease.getPid());
+            jsonObject.put("patientName",patientDao.getPatientById(disease.getPid()).getName());
+            jsonObject.put("doctorName",doctorDao.getDoctorByUid(disease.getDid()).getName());
+            jsonObject.put("sugar",disease.getSugar());
+            jsonObject.put("sleep",disease.getSleep());
+            jsonObject.put("joint",disease.getJoint());
+            jsonObject.put("date",disease.getDate());
+            res.add(jsonObject);
+        }
+        return res;
+    }
+
+    @Override
     public PageResult findPageForDoctor(PageRequest pageRequest, List<Integer> pids, int did) {
         return PageUtil.getPageResult(getPageInfoForDoctor(pageRequest, pids,did),page);
     }

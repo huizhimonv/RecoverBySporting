@@ -31,8 +31,8 @@ public class DiseaseManageApi {
     @Autowired
     LogService logService;
 
-
     /**
+     * 医生：
      * 根据医生的id和病人的id 返回某一个患者的疾病汇报（patientName、sugar、sleep、joint、date）
      */
     @RequestMapping(value = "/findById",method = RequestMethod.GET)
@@ -44,6 +44,17 @@ public class DiseaseManageApi {
         String account = (String) subject.getPrincipal();
         Doctor doctor = userService.getUserByAccount(account);
         return new ResultBody<>(true, 200, diseaseService.findById(id, doctor.getId()));
+    }
+    /**
+     * 管理员：
+     * 根据患者的id 返回该患者的疾病信息(有返回医生的name)
+     */
+    @RequestMapping(value = "/findByPid",method = RequestMethod.GET)
+    public Object findByPid(@RequestParam Integer id){
+        if(id == null){
+            return new ResultBody<>(false,501,"missing id");
+        }
+        return new ResultBody<>(true,200,diseaseService.findByPid(id));
     }
 
     /**

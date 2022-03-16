@@ -28,4 +28,5 @@
                             sugar=#{disease.sugar},sleep=#{disease.sleep},
                             joint=#{disease.joint},date=#{disease.date} WHERE id=#{disease.id}</update>
     <delete id="delete">DELETE FROM disease WHERE id=#{id}</delete>
+    <select id="findByPid" resultType="Disease">SELECT * FROM disease WHERE pid=#{pid}</select>
 </mapper>

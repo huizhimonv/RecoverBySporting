@@ -9,6 +9,7 @@ import java.util.List;
 @Mapper
 public interface DiseaseDao {
     List<Disease> findById(Integer pid, Integer did);
+    List<Disease> findByPid(int pid);
     List<Disease> findForDoctor(Integer pid,Integer did);
     List<Disease> findForAdmin(Integer pid);
     void insert(@Param("disease") Disease disease);
