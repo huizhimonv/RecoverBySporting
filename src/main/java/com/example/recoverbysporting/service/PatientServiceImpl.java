@@ -99,6 +99,7 @@ public class PatientServiceImpl implements PatientService{
             jsonObject.put("startDate",patient.getStartDate());
             jsonObject.put("endDate",patient.getEndDate());
             jsonObject.put("registerDate",patient.getRegisterDate());
+            jsonObject.put("oid",patient.getOid());
             jsonObject.put("organization",organizationDao.findByOid(patient.getOid()).getName());
             jsonObject.put("loginDate",patient.getLoginDate());
             res.add(jsonObject);
@@ -124,7 +125,9 @@ public class PatientServiceImpl implements PatientService{
             jsonObject.put("startDate",patient.getStartDate());
             jsonObject.put("endDate",patient.getEndDate());
             jsonObject.put("registerDate",patient.getRegisterDate());
+            jsonObject.put("did",patient.getDid());
             jsonObject.put("doctorName",doctorDao.getDoctorByUid(patient.getDid()).getName());
+            jsonObject.put("oid",patient.getOid());
             jsonObject.put("organization",organizationDao.findByOid(patient.getOid()).getName());
             jsonObject.put("loginDate",patient.getLoginDate());
             res.add(jsonObject);
