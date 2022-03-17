@@ -3,4 +3,33 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.recoverbysporting.dao.PrescribeDao">
+    <select id="findById" resultType="Prescribe">SELECT * FROM WHERE pid=#{pid} AND did=#{did}</select>
+    <select id="findByPid" resultType="Prescribe">SELECT * FROM WHERE pid=#{pid}</select>
+    <insert id="insert">INSERT INTO prescribe(pid,did,aid,date,reportDate,tip)
+                        VALUES (#{prescribe.pid},#{prescribe.did},
+                                #{prescribe.aid},
+                                #{prescribe.date},#{prescribe.reportDate,
+                                #{prescribe.tip})</insert>
+    <update id="update">UPDATE prescribe SET pid=#{prescribe.pid},did=#{prescribe.did},
+                                            aid=#{prescribe.aid},date=#{prescribe.date},
+                                            reportDate=#{prescribe.reportDate},tip=#{prescribe.tip}
+                                            WHERE id=#{prescribe.id}</update>
+    <delete id="delete">DELETE FROM prescribe WHERE id=#{id}</delete>
+    <select id="findForDoctor" resultType="Prescribe">SELECT * FROM prescribe
+        <trim prefix="where" prefixOverrides="and|or">
+            <if test="pid!=null and pid!=''" >
+                and pid=#{pid}
+            </if>
+            <if test="did!=null and did!=''" >
+                and did=#{did}
+            </if>
+        </trim>
+    </select>
+    <select id="findForAdmin" resultType="Prescribe">SELECT * FROM prescribe
+        <trim prefix="where" prefixOverrides="and|or">
+            <if test="pid!=null and pid!=''" >
+                and pid=#{pid}
+            </if>
+        </trim>
+    </select>
 </mapper>

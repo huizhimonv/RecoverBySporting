@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -66,13 +67,18 @@ public class DiseaseManageApi {
                                @RequestParam(required = false) String patientName) {
         PageRequest pageRequest = new PageRequest(pageNum, pageSize);
         //根据patientName获得pid,因为存在不同的病人可能有相同的名字
-        List<Integer> pids = patientService.getIdByName(patientName);
-        if (pids == null) {
-            return new ResultBody<>(false, 501, "unknown patientName");
-        }
+        List<Integer> pids = new ArrayList<>();
         Subject subject = SecurityUtils.getSubject();
         String account = (String) subject.getPrincipal();
         Doctor doctor = userService.getUserByAccount(account);
+        //将pids为null分为两种情况
+        if(patientName == null){
+            return new ResultBody<>(true, 200, diseaseService.findPageForDoctor(pageRequest, pids, doctor.getId()));
+        }
+        pids = patientService.getIdByName(patientName);
+        if(pids.isEmpty()){
+            return new ResultBody<>(true,200,null);
+        }
         return new ResultBody<>(true, 200, diseaseService.findPageForDoctor(pageRequest, pids, doctor.getId()));
     }
 
@@ -87,17 +93,19 @@ public class DiseaseManageApi {
                               @RequestParam(required = false) String patientName) {
         PageRequest pageRequest = new PageRequest(pageNum, pageSize);
         //根据patientName获得pid,因为存在不同的病人可能有相同的名字
-        List<Integer> pids = patientService.getIdByName(patientName);
-        if (pids == null) {
-            if(isAdmin()){
-                logService.insert(new Log(getIdAndDate().getDid(), "对患者进行搜索", getIdAndDate().getDate(), "失败"));
-            }
-            return new ResultBody<>(false, 501, "unknown patientName");
+        List<Integer> pids = new ArrayList<>();
+        Subject subject = SecurityUtils.getSubject();
+        String account = (String) subject.getPrincipal();
+        Doctor doctor = userService.getUserByAccount(account);
+        //将pids为null分为两种情况
+        if(patientName == null){
+            return new ResultBody<>(true, 200, diseaseService.findPageForDoctor(pageRequest, pids, doctor.getId()));
         }
-        if(isAdmin()){
-            logService.insert(new Log(getIdAndDate().getDid(), "查看患者的患病信息", getIdAndDate().getDate(), "成功"));
+        pids = patientService.getIdByName(patientName);
+        if(pids.isEmpty()){
+            return new ResultBody<>(true,200,null);
         }
-        return new ResultBody<>(true,200,diseaseService.findPageForAdmin(pageRequest,pids));
+        return new ResultBody<>(true, 200, diseaseService.findPageForDoctor(pageRequest, pids, doctor.getId()));
     }
 
     /**

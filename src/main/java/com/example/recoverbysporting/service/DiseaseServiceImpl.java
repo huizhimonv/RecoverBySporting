@@ -34,6 +34,8 @@ public class DiseaseServiceImpl implements DiseaseService{
         for(Disease disease : diseaseDao.findById(pid, did)){
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("id",disease.getPid());
+            jsonObject.put("pid",disease.getPid());
+            jsonObject.put("did",disease.getDid());
             jsonObject.put("patientName",patientDao.getPatientById(disease.getPid()).getName());
             jsonObject.put("sugar",disease.getSugar());
             jsonObject.put("sleep",disease.getSleep());
@@ -50,6 +52,8 @@ public class DiseaseServiceImpl implements DiseaseService{
         for(Disease disease : diseaseDao.findByPid(pid)){
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("id",disease.getPid());
+            jsonObject.put("pid",disease.getPid());
+            jsonObject.put("did",disease.getDid());
             jsonObject.put("patientName",patientDao.getPatientById(disease.getPid()).getName());
             jsonObject.put("doctorName",doctorDao.getDoctorByUid(disease.getDid()).getName());
             jsonObject.put("sugar",disease.getSugar());

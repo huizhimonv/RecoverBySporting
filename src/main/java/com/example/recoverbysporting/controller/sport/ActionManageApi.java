@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping("/action")
-public class ActionApi {
+@RequestMapping("/action/manage")
+public class ActionManageApi {
     @Autowired
     ActionService actionService;
 
@@ -68,5 +68,12 @@ public class ActionApi {
         }
         actionService.delete(id);
         return new ResultBody<>(true,200,null);
+    }
+    /**
+     * 动作库下拉框
+     */
+    @RequestMapping(value = "/getList",method = RequestMethod.GET)
+    public Object getList(){
+        return new ResultBody<>(true,200,actionService.getList());
     }
 }

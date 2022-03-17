@@ -47,6 +47,18 @@ public class ActionServiceImpl implements ActionService{
         actionDao.delete(id);
     }
 
+    @Override
+    public List<JSONObject> getList() {
+        List<JSONObject> res = new ArrayList<>();
+        for(Action action : actionDao.findAll()){
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("id",action.getId());
+            jsonObject.put("name",action.getName());
+            res.add(jsonObject);
+        }
+        return res;
+    }
+
     private PageInfo<?> getPageInfo(PageRequest pageRequest) {
         int pageNum = pageRequest.getPageNum();
         int pageSize = pageRequest.getPageSize();
