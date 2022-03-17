@@ -104,6 +104,7 @@ public class PrescribeServiceImpl implements PrescribeService{
         for(Prescribe prescribe : findForDoctor(pids, did)){
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("id",prescribe.getId());
+            jsonObject.put("pid",prescribe.getPid());
             jsonObject.put("patientName",patientDao.getPatientById(prescribe.getPid()).getName());
             jsonObject.put("telephone",patientDao.getPatientById(prescribe.getPid()).getTelephone());
             jsonObject.put("actionName",actionDao.findById(prescribe.getAid()).getName());
@@ -123,6 +124,8 @@ public class PrescribeServiceImpl implements PrescribeService{
         for(Prescribe prescribe : findForAdmin(pids)){
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("id",prescribe.getId());
+            jsonObject.put("pid",prescribe.getPid());
+            jsonObject.put("did",prescribe.getDid());
             jsonObject.put("doctorName",doctorDao.getDoctorByUid(prescribe.getDid()).getName());
             jsonObject.put("patientName",patientDao.getPatientById(prescribe.getPid()).getName());
             jsonObject.put("telephone",patientDao.getPatientById(prescribe.getPid()).getTelephone());
