@@ -8,7 +8,7 @@
     <insert id="insert">INSERT INTO prescribe(pid,did,aid,date,reportDate,tip)
                         VALUES (#{prescribe.pid},#{prescribe.did},
                                 #{prescribe.aid},
-                                #{prescribe.date},#{prescribe.reportDate,
+                                #{prescribe.date},#{prescribe.reportDate},
                                 #{prescribe.tip})</insert>
     <update id="update">UPDATE prescribe SET pid=#{prescribe.pid},did=#{prescribe.did},
                                             aid=#{prescribe.aid},date=#{prescribe.date},
