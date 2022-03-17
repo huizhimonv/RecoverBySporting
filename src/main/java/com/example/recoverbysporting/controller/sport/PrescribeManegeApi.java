@@ -1,7 +1,9 @@
 package com.example.recoverbysporting.controller.sport;
 
 import com.example.recoverbysporting.entity.Doctor;
+import com.example.recoverbysporting.entity.Log;
 import com.example.recoverbysporting.entity.Prescribe;
+import com.example.recoverbysporting.service.LogService;
 import com.example.recoverbysporting.service.PatientService;
 import com.example.recoverbysporting.service.PrescribeService;
 import com.example.recoverbysporting.service.UserService;
@@ -26,6 +28,8 @@ public class PrescribeManegeApi {
     UserService userService;
     @Autowired
     PatientService patientService;
+    @Autowired
+    LogService logService;
     /**
      * 医生：
      * 根据患者的id返回对应的运动处方 返回：pid、patientName、telephone、actionName、date，reportDate
@@ -50,6 +54,9 @@ public class PrescribeManegeApi {
     public Object findByPid(@RequestParam Integer pid){
         if(pid == null){
             return new ResultBody<>(false,501,"missing id");
+        }
+        if(isAdmin()){
+            logService.insert(new Log(getIdAndDate().getDid(), "查看:["+patientService.getById(pid).getName()+"]的动作处方", getIdAndDate().getDate(), "成功"));
         }
         return new ResultBody<>(true,200,prescribeService.findByPid(pid));
     }
@@ -89,24 +96,17 @@ public class PrescribeManegeApi {
         PageRequest pageRequest = new PageRequest(pageNum, pageSize);
         //根据patientName获得pid,因为存在不同的病人可能有相同的名字
         List<Integer> pids = new ArrayList<>();
-        Subject subject = SecurityUtils.getSubject();
-        String account = (String) subject.getPrincipal();
-        Doctor doctor = userService.getUserByAccount(account);
         //将pids为null分为两种情况
         if(patientName == null){
-            return new ResultBody<>(true, 200, prescribeService.findPageForDoctor(pageRequest, pids, doctor.getId()));
+            return new ResultBody<>(true, 200, prescribeService.findPageForAdmin(pageRequest, pids));
         }
         pids = patientService.getIdByName(patientName);
         if(pids.isEmpty()){
             return new ResultBody<>(true,200,null);
         }
-        return new ResultBody<>(true, 200, prescribeService.findPageForDoctor(pageRequest, pids, doctor.getId()));
+        return new ResultBody<>(true, 200, prescribeService.findPageForAdmin(pageRequest, pids));
     }
 
-    /**
-     * 管理员：
-     *   返回所有医生对应的所有运动处方 id、patientName、doctorName、telephone、actionName、date，reportDate
-     */
 
     /**
      * 医生：
@@ -133,6 +133,9 @@ public class PrescribeManegeApi {
         String date = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime());
         prescribe.setDate(date);
         prescribeService.insert(prescribe);
+        if(isAdmin()){
+            logService.insert(new Log(getIdAndDate().getDid(), "新增["+patientService.getById(prescribe.getPid()).getName()+"]的运动处方", getIdAndDate().getDate(), "成功"));
+        }
         return new ResultBody<>(true,200,null);
     }
     /**
@@ -166,6 +169,9 @@ public class PrescribeManegeApi {
         String date = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime());
         prescribe.setDate(date);
         prescribeService.update(prescribe);
+        if(isAdmin()){
+            logService.insert(new Log(getIdAndDate().getDid(), "修改["+patientService.getById(prescribe.getPid()).getName()+"]的运动处方", getIdAndDate().getDate(), "成功"));
+        }
         return new ResultBody<>(true,200,null);
     }
 
@@ -177,8 +183,27 @@ public class PrescribeManegeApi {
         if(id == null){
             return new ResultBody<>(false,501,"missing id");
         }
+        if(isAdmin()){
+            logService.insert(new Log(getIdAndDate().getDid(), "删除["+patientService.getById(id).getName()+"]的运动处方", getIdAndDate().getDate(), "成功"));
+        }
         prescribeService.delete(id);
         return new ResultBody<>(true,200,null);
     }
-
+    private Log getIdAndDate(){
+        Subject subject = SecurityUtils.getSubject();
+        String account = (String) subject.getPrincipal();
+        Doctor doctor = userService.getUserByAccount(account);
+        String date = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(Calendar.getInstance().getTime());
+        return new Log(doctor.getId(),date);
+    }
+    private  boolean isAdmin(){
+        Subject subject = SecurityUtils.getSubject();
+        String account = (String) subject.getPrincipal();
+        Doctor doctor = userService.getUserByAccount(account);
+        if(doctor.getRole().contains("admin")){
+            return true;
+        }else {
+            return false;
+        }
+    }
 }

@@ -1,6 +1,8 @@
 package com.example.recoverbysporting.controller.sport;
 
 import com.example.recoverbysporting.entity.Doctor;
+import com.example.recoverbysporting.entity.Log;
+import com.example.recoverbysporting.service.LogService;
 import com.example.recoverbysporting.service.PatientService;
 import com.example.recoverbysporting.service.ReportService;
 import com.example.recoverbysporting.service.UserService;
@@ -15,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 @RestController
@@ -27,6 +31,8 @@ public class ReportManageApi {
     ReportService reportService;
     @Autowired
     UserService userService;
+    @Autowired
+    LogService logService;
 
     /**医生
      * 分页返回执行汇报（按照时间降序排列） id、patientName、actionName、reportDate
@@ -68,6 +74,7 @@ public class ReportManageApi {
         }
         return new ResultBody<>(true, 200, reportService.findPageForAdmin(pageRequest, pids));
     }
+
     /**
      * 医生或管理员
      * 根据执行汇报的id进行删除
@@ -77,8 +84,28 @@ public class ReportManageApi {
         if(id == null){
             return new ResultBody<>(false,501,"missing id");
         }
+        if(isAdmin()){
+            logService.insert(new Log(getIdAndDate().getDid(), "删除["+patientService.getById(id).getName()+"]的运动汇报", getIdAndDate().getDate(), "成功"));
+        }
         reportService.delete(id);
         return new ResultBody<>(true,200,null);
     }
 
+    private Log getIdAndDate(){
+        Subject subject = SecurityUtils.getSubject();
+        String account = (String) subject.getPrincipal();
+        Doctor doctor = userService.getUserByAccount(account);
+        String date = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(Calendar.getInstance().getTime());
+        return new Log(doctor.getId(),date);
+    }
+    private  boolean isAdmin(){
+        Subject subject = SecurityUtils.getSubject();
+        String account = (String) subject.getPrincipal();
+        Doctor doctor = userService.getUserByAccount(account);
+        if(doctor.getRole().contains("admin")){
+            return true;
+        }else {
+            return false;
+        }
+    }
 }

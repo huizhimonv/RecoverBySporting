@@ -42,7 +42,7 @@ public class ReportServiceImpl implements ReportService{
 
     @Override
     public void delete(int id) {
-        delete(id);
+        reportDao.delete(id);
     }
 
     private PageInfo<?> getPageInfoForDoctor(PageRequest pageRequest, List<Integer> pids, Integer did) {
