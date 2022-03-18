@@ -45,6 +45,25 @@ public class ReportServiceImpl implements ReportService{
         reportDao.delete(id);
     }
 
+    @Override
+    public JSONObject getById(int id) {
+        JSONObject res = new JSONObject();
+        Report report = reportDao.getById(id);
+        res.put("id",report.getId());
+        res.put("patientName",patientDao.getPatientById(report.getPid()).getName());
+        res.put("doctorName",doctorDao.getDoctorByUid(report.getDid()).getName());
+        res.put("actionName",actionDao.findById(report.getAid()).getName());
+        res.put("content",report.getContent());
+        res.put("reportDate",report.getReportDate());
+        res.put("advice",report.getAdvice());
+        return res;
+    }
+
+    @Override
+    public void advice(int id, String advice) {
+        reportDao.advice(id, advice);
+    }
+
     private PageInfo<?> getPageInfoForDoctor(PageRequest pageRequest, List<Integer> pids, Integer did) {
         int pageNum = pageRequest.getPageNum();
         int pageSize = pageRequest.getPageSize();

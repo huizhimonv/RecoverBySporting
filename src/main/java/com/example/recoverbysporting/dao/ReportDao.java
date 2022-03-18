@@ -11,4 +11,6 @@ public interface ReportDao {
     List<Report> findForDoctor(Integer pid, Integer did);
     List<Report> findForAdmin(Integer pid);
     void delete(int id);
+    Report getById(int id);
+    void advice(int id,String advice);
 }

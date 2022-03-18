@@ -1,5 +1,6 @@
 package com.example.recoverbysporting.controller.sport;
 
+import com.alibaba.fastjson.JSONObject;
 import com.example.recoverbysporting.entity.Doctor;
 import com.example.recoverbysporting.entity.Log;
 import com.example.recoverbysporting.service.LogService;
@@ -12,10 +13,8 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.omg.CORBA.INITIALIZE;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.objenesis.ObjenesisHelper;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -88,6 +87,33 @@ public class ReportManageApi {
             logService.insert(new Log(getIdAndDate().getDid(), "删除["+patientService.getById(id).getName()+"]的运动汇报", getIdAndDate().getDate(), "成功"));
         }
         reportService.delete(id);
+        return new ResultBody<>(true,200,null);
+    }
+
+    /**
+     * 根据汇报的id返回具体的信息  id、patientName、doctorName、actionName、content、reportDate、advice
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "/getById",method = RequestMethod.GET)
+    public Object getById(@RequestParam Integer id){
+        if(id == null){
+            return new ResultBody<>(false,501,"missing id");
+        }
+        return new ResultBody<>(true,200,reportService.getById(id));
+    }
+
+    /**
+     * 医生根据id提建议
+     * @return
+     */
+    public Object advice(@RequestBody JSONObject data){
+        Integer id = data.getInteger("id");
+        String advice = data.getString("advice");
+        if(id == null){
+            return new ResultBody<>(false,501,"missing id");
+        }
+        reportService.advice(id,advice);
         return new ResultBody<>(true,200,null);
     }
 

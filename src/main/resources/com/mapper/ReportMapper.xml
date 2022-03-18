@@ -23,4 +23,6 @@
         ORDER BY reportDate DESC
     </select>
     <delete id="delete">DELETE FROM report WHERE id=#{id}</delete>
+    <select id="getById" resultType="Report">SELECT * FROM report WHERE id=#{id}</select>
+    <update id="advice">UPDATE report SET advice=#{advice} WHERE id=#{id}</update>
 </mapper>
