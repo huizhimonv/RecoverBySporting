@@ -2,8 +2,10 @@ package com.example.recoverbysporting.controller.login;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.example.recoverbysporting.dao.PatientDao;
 import com.example.recoverbysporting.entity.Doctor;
 import com.example.recoverbysporting.service.OrganizationService;
+import com.example.recoverbysporting.service.PatientService;
 import com.example.recoverbysporting.service.UserService;
 import com.example.recoverbysporting.utils.ResultBody;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +30,9 @@ public class LoginApi {
     UserService userService;
     @Autowired
     OrganizationService organizationService;
+    @Autowired
+    PatientDao patientDao;
+
     @RequestMapping(value = "/login",method = RequestMethod.POST)
     public Object login(@RequestParam String account,
                         @RequestParam String password,
@@ -87,6 +92,21 @@ public class LoginApi {
         Subject subject = SecurityUtils.getSubject();
         subject.logout();
         return new ResultBody<>(true,200,"logout success");
+    }
+
+    /**
+     * 获取用户数量、医生数量、机构数量
+     */
+    @RequestMapping(value = "/getCount",method = RequestMethod.GET)
+    public Object getCount(){
+       JSONObject res = new JSONObject();
+       int doctorCount = userService.getDoctorList().size();
+       int userCount = patientDao.findAll().size();
+       int organizationCount = organizationService.getList().size();
+       res.put("doctorCount",doctorCount);
+       res.put("userCount",userCount);
+       res.put("organizationCount",organizationCount);
+       return new ResultBody<>(true,200,res);
     }
     /**
      * 查看用户的信息

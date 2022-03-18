@@ -16,4 +16,6 @@ public interface PatientDao {
     void deleteById(int id);
     //疾病汇报模块
     List<Integer> getIdByName(String patientName);
+    //首页模块
+
 }
