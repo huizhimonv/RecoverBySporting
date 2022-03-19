@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.recoverbysporting.dao.FoodDao">
+    <select id="findForAdmin" resultType="Food">SELECT * FROM food
+        <trim prefix="where" prefixOverrides="and|or">
+            <if test="pid!=null and pid!=''" >
+                and pid=#{pid}
+            </if>
+        </trim>
+        ORDER BY date DESC
+    </select>
+    <select id="findForDoctor" resultType="Food">SELECT * FROM food
+        <trim prefix="where" prefixOverrides="and|or">
+            <if test="pid!=null and pid!=''" >
+                and pid=#{pid}
+            </if>
+            <if test="did!=null and did!=''" >
+                and did=#{did}
+            </if>
+        </trim>
+        ORDER BY date DESC
+    </select>
+    <insert id="insert">INSERT INTO food(pid,did,content,date)
+                        VALUES(#{food.pid},#{food.did},#{food.content},#{food.date})</insert>
+    <update id="update">UPDATE food SET pid=#{food.pid},did=#{food.did},content=#{food.content},
+                                        date=#{food.date},reportDate=#{food.reportDate}
+                                        WHERE id=#{food.id}</update>
+    <delete id="delete">DELETE FROM food WHERE id=#{id}</delete>
+    <select id="getById" resultType="Food">SELECT * FROM food WHERE id=#{id}</select>
+</mapper>
