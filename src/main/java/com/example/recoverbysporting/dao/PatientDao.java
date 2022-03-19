@@ -17,5 +17,8 @@ public interface PatientDao {
     //疾病汇报模块
     List<Integer> getIdByName(String patientName);
     //首页模块
+    //饮食模块
+    List<Patient> getListByDid(int did);
+    List<Patient> getList();
 
 }

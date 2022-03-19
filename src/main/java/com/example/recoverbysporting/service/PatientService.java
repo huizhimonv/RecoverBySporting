@@ -21,4 +21,6 @@ public interface PatientService {
     List<Integer> getIdByName(String patientName);
     //系统管理模块
     Patient getById(int id);
+    List<Patient> getListByDid(int did);
+    List<Patient> getList();
 }

@@ -14,10 +14,7 @@ import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -164,6 +161,20 @@ public class PatientManageApi {
             logService.insert(new Log(getIdAndDate().getDid(),"删除患者"+"["+name+"]"+"的信息", getIdAndDate().getDate(), "成功"));
         }
         return new ResultBody<>(true,200,null);
+    }
+
+    /**
+     * 根据did返回id和name的下拉框
+     * @return
+     */
+    @RequestMapping("/getListByDid")
+    public Object getListByDid(@RequestParam Integer did){
+        return new ResultBody<>(true,200,patientService.getListByDid(did));
+    }
+
+    @RequestMapping("/getList")
+    public Object getList(){
+        return new ResultBody<>(true,200,patientService.getList());
     }
 
     private  Log getIdAndDate(){
