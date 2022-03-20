@@ -18,4 +18,5 @@
     <select id="getIdByName" resultType="Integer">SELECT id FROM patient WHERE name=#{patientName}</select>
     <select id="getListByDid" resultType="Patient">SELECT id,name FROM patient WHERE did=#{did}</select>
     <select id="getList" resultType="Patient">SELECT id,name FROM patient</select>
+    <select id="getByOid" resultType="Patient">SELECT * FROM patient WHERE oid=#{oid}</select>
 </mapper>

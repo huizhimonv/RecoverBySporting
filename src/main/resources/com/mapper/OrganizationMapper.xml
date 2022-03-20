@@ -5,4 +5,11 @@
 <mapper namespace="com.example.recoverbysporting.dao.OrganizationDao">
     <select id="findByOid" resultType="Organization">SELECT * FROM organization WHERE id=#{oid}</select>
     <select id="getList" resultType="Organization">SELECT id,name FROM organization </select>
+    <select id="findAll" resultType="Organization">SELECT * FROM organization</select>
+    <insert id="insert">INSERT INTO organization(name,leader,telephone,date)
+                        VALUES (#{o.name},#{o.leader},#{o.telephone},#{o.date})</insert>
+    <update id="update">UPDATE organization SET name=#{o.name},leader=#{o.leader},
+                                                telephone=#{o.telephone},date=#{o.date}
+                                                WHERE id=#{o.id}</update>
+    <delete id="delete">DELETE FROM organization WHERE id=#{id}</delete>
 </mapper>

@@ -20,5 +20,7 @@ public interface PatientDao {
     //饮食模块
     List<Patient> getListByDid(int did);
     List<Patient> getList();
+    //机构管理模块
+    List<Patient> getByOid(int oid);
 
 }

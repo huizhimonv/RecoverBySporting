@@ -21,4 +21,5 @@
     <update id="disable">UPDATE doctor SET isDisable=true WHERE id=#{id}</update>
     <update id="cancelDisable"> UPDATE doctor SET isDisable=false WHERE id=#{id}</update>
     <select id="getById" resultType="Doctor">SELECT * FROM doctor WHERE id=#{id}</select>
+    <select id="findByOid" resultType="Doctor">SELECT * FROM doctor WHERE oid=#{oid}</select>
 </mapper>

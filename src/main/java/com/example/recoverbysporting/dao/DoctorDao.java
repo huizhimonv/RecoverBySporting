@@ -26,4 +26,6 @@ public interface DoctorDao {
     void disable(int id);
     void cancelDisable(int id);
     Doctor getById(int id);
+    //机构
+    List<Doctor> findByOid(int oid);
 }
